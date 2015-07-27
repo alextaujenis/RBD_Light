@@ -1,24 +1,17 @@
 // include files
 #include <Light.h>
 
+// static values
+int BAUD = 11500;
+
 // initialize variables
 Light LED(13);
-unsigned long on_timer;
-unsigned long off_timer;
+unsigned long on_timer = 0;
+unsigned long off_timer = 0;
 int timeout = 1000;
 
-void turnLightOn() {
-  LED.on();
-  off_timer = millis();
-}
-
-void turnLightOff() {
-  LED.off();
-  on_timer = millis();
-}
-
 void setup() {
-  turnLightOn();
+  Serial.begin(BAUD);
 }
 
 void loop() {
@@ -28,4 +21,16 @@ void loop() {
   if(LED.isOff() && millis() - on_timer > timeout) {
     turnLightOn();
   }
+}
+
+// local functions
+
+void turnLightOn() {
+  LED.on();
+  off_timer = millis();
+}
+
+void turnLightOff() {
+  LED.off();
+  on_timer = millis();
 }
