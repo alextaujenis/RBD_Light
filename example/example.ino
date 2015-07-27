@@ -7,9 +7,9 @@ int BAUD = 11500;
 // variables
 String serial_buffer = "";
 Light LED(13);
-int on_time  = 0;
-int off_time = 0;
-int times    = 0;
+int on_time   = 0;
+int off_time  = 0;
+int times     = 0;
 
 void setup() {
   // start the serial connection
