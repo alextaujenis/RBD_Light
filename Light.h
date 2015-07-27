@@ -10,8 +10,11 @@ class Light {
     Light(int pin);
     void on();
     void off();
+    bool isOn();
+    bool isOff();
   private:
     int _pin;
+    bool _on;
 };
 
 #endif
