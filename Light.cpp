@@ -6,14 +6,14 @@ Light::Light(int pin) {
 }
 
 void Light::on() {
-  _pwm(255);
+  pwm(255);
 }
 
 void Light::off() {
-  _pwm(0);
+  pwm(0);
 }
 
-void Light::_pwm(int value) {
+void Light::pwm(int value) {
   if(value > 0) {
     _on = true;
   }
@@ -44,7 +44,8 @@ void Light::blink(int on_time, int off_time, int times) {
   _blink_on_time  = on_time;
   _blink_off_time = off_time;
   _blink_times    = times;
-  _blinking       = true;
+  _stopEverything();
+  _startBlinking();
 }
 
 void Light::pulse(int up_time, int on_time, int down_time, int off_time, int times) {
@@ -53,6 +54,7 @@ void Light::pulse(int up_time, int on_time, int down_time, int off_time, int tim
   _pulse_down_time = down_time;
   _pulse_off_time  = off_time;
   _pulse_times     = times;
+  _stopEverything();
   _startPulsing();
 }
 
@@ -69,8 +71,7 @@ void Light::_blink() {
     _blink_times--;
     // if this is the last blink
     if(_blink_times == 0) {
-      // stop blinking
-      _blinking = false;
+      _stopBlinking();
     }
   }
   else if(isOff() && _shouldBlinkOn()) {
@@ -108,7 +109,7 @@ void Light::_pulse() {
 
 void Light::_rising() {
   if(_shouldBeRising()) {
-    _pwm(_risingValue());
+    pwm(_risingValue());
   }
   else {
     _pulse_on_timer = millis();
@@ -140,7 +141,7 @@ bool Light::_shouldBeMax() {
 
 void Light::_falling() {
   if(_shouldBeFalling()) {
-    _pwm(_fallingValue());
+    pwm(_fallingValue());
   }
   else {
     _pulse_off_timer = millis();
@@ -185,4 +186,17 @@ void Light::_startPulsing() {
 
 void Light::_stopPulsing() {
   _pulsing = false;
+}
+
+void Light::_startBlinking() {
+  _blinking = true;
+}
+
+void Light::_stopBlinking() {
+  _blinking = false;
+}
+
+void Light::_stopEverything() {
+  _stopBlinking();
+  _stopPulsing();
 }

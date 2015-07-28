@@ -15,6 +15,7 @@ class Light {
     Light(int pin);
     void on();
     void off();
+    void pwm(int value); // 0 - 255
     bool isOn();
     bool isOff();
     void update();
@@ -35,6 +36,8 @@ class Light {
     void _blink();
     bool _shouldBlinkOff();
     bool _shouldBlinkOn();
+    void _startBlinking();
+    void _stopBlinking();
 
     // pulsing
     bool _pulsing;
@@ -43,25 +46,25 @@ class Light {
     int _pulse_down_time;
     int _pulse_off_time;
     int _pulse_times;
-    void _pulse();
-    void _pwm(int value);
     int _status;
+    unsigned long _pulse_up_timer;
+    unsigned long _pulse_on_timer;
+    unsigned long _pulse_down_timer;
+    unsigned long _pulse_off_timer;
+    void _pulse();
     void _rising();
     void _max();
     void _falling();
     void _min();
     void _startPulsing();
     void _stopPulsing();
-    unsigned long _pulse_up_timer;
-    unsigned long _pulse_on_timer;
-    unsigned long _pulse_down_timer;
-    unsigned long _pulse_off_timer;
     bool _shouldBeRising();
-    int _risingValue();
     bool _shouldBeMax();
     bool _shouldBeFalling();
-    int _fallingValue();
     bool _shouldBeMin();
+    int _risingValue();
+    int _fallingValue();
+    void _stopEverything();
 };
 
 #endif
