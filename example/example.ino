@@ -7,7 +7,9 @@ int BAUD = 11500;
 // variables
 String serial_buffer = "";
 Light LED(13);
+int up_time   = 0;
 int on_time   = 0;
+int down_time = 0;
 int off_time  = 0;
 int times     = 0;
 
@@ -23,6 +25,32 @@ void loop() {
   // capture incoming serial data
   if (Serial.available()) {
     serial_buffer += char(Serial.read());
+
+    // API Command pulsing:
+    if (serial_buffer.indexOf(":") > -1) {
+      up_time   = split(serial_buffer,',',0).toInt();
+      on_time   = split(serial_buffer,',',1).toInt();
+      down_time = split(serial_buffer,',',2).toInt();
+      off_time  = split(serial_buffer,',',3).toInt();
+      times     = split(serial_buffer,',',4).toInt();
+
+      // build a response string
+      Serial.print("Pulsing: ");
+      Serial.print(up_time);
+      Serial.print(" ");
+      Serial.print(on_time);
+      Serial.print(" ");
+      Serial.print(down_time);
+      Serial.print(" ");
+      Serial.print(off_time);
+      Serial.print(" ");
+      Serial.println(times);
+
+      LED.pulse(up_time, on_time, down_time, off_time, times);
+
+      // clear the buffer
+      serial_buffer = "";
+    }
 
     // API Command blink: on_time,off_time,times;
     if (serial_buffer.indexOf(";") > -1) {

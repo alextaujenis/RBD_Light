@@ -6,13 +6,21 @@ Light::Light(int pin) {
 }
 
 void Light::on() {
-  analogWrite(_pin, 255);
-  _on = true;
+  _pwm(255);
 }
 
 void Light::off() {
-  analogWrite(_pin, 0);
-  _on = false;
+  _pwm(0);
+}
+
+void Light::_pwm(int value) {
+  if(value > 0) {
+    _on = true;
+  }
+  else {
+    _on = false;
+  }
+  analogWrite(_pin, value);
 }
 
 bool Light::isOn() {
@@ -27,6 +35,9 @@ void Light::update() {
   if(_blinking) {
     _blink();
   }
+  if(_pulsing) {
+    _pulse();
+  }
 }
 
 void Light::blink(int on_time, int off_time, int times) {
@@ -34,6 +45,15 @@ void Light::blink(int on_time, int off_time, int times) {
   _blink_off_time = off_time;
   _blink_times    = times;
   _blinking       = true;
+}
+
+void Light::pulse(int up_time, int on_time, int down_time, int off_time, int times) {
+  _pulse_up_time   = up_time;
+  _pulse_on_time   = on_time;
+  _pulse_down_time = down_time;
+  _pulse_off_time  = off_time;
+  _pulse_times     = times;
+  _startPulsing();
 }
 
 
@@ -67,4 +87,102 @@ bool Light::_shouldBlinkOff() {
 
 bool Light::_shouldBlinkOn() {
   return (millis() - _blink_off_timer > _blink_off_time);
+}
+
+void Light::_pulse() {
+  switch(_status) {
+    case RISING:
+      _rising();
+      break;
+    case MAX:
+      _max();
+      break;
+    case FALLING:
+      _falling();
+      break;
+    case MIN:
+      _min();
+      break;
+  }
+}
+
+void Light::_rising() {
+  if(_shouldBeRising()) {
+    _pwm(_risingValue());
+  }
+  else {
+    _pulse_on_timer = millis();
+    _status = MAX;
+  }
+}
+
+bool Light::_shouldBeRising() {
+  return (millis() - _pulse_up_timer < _pulse_up_time);
+}
+
+int Light::_risingValue() {
+  return int(((millis() - _pulse_up_timer) / float(_pulse_up_time)) * 255);
+}
+
+void Light::_max() {
+  if(_shouldBeMax()) {
+    on();
+  }
+  else {
+    _pulse_down_timer = millis();
+    _status = FALLING;
+  }
+}
+
+bool Light::_shouldBeMax() {
+  return (millis() - _pulse_on_timer < _pulse_on_time);
+}
+
+void Light::_falling() {
+  if(_shouldBeFalling()) {
+    _pwm(_fallingValue());
+  }
+  else {
+    _pulse_off_timer = millis();
+    _status = MIN;
+  }
+}
+
+bool Light::_shouldBeFalling() {
+  return (millis() - _pulse_down_timer < _pulse_down_time);
+}
+
+int Light::_fallingValue() {
+  return int(abs(1 - ((millis() - _pulse_down_timer) / float(_pulse_down_time))) * 255);
+}
+
+void Light::_min() {
+  if(_shouldBeMin()) {
+    off();
+  }
+  else {
+    _pulse_times--;
+
+    if(_pulse_times == 0) {
+      _stopPulsing();
+    }
+    else {
+      _pulse_up_timer = millis();
+      _status = RISING;
+    }
+  }
+}
+
+bool Light::_shouldBeMin() {
+  return (millis() - _pulse_off_timer < _pulse_off_time);
+}
+
+void Light::_startPulsing() {
+  _status         = RISING;
+  _pulse_up_timer = millis();
+  _pulsing        = true;
+}
+
+void Light::_stopPulsing() {
+  _pulsing = false;
 }
