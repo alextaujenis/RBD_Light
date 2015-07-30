@@ -24,15 +24,12 @@ class Light {
   private:
     // global
     int _pin;
+    int _times;
+    void _stopEverything();
 
     // blinking
     bool _on;
     bool _blinking;
-    int _blink_on_time;
-    int _blink_off_time;
-    int _blink_times;
-    unsigned long _blink_on_timer;
-    unsigned long _blink_off_timer;
     void _blink();
     bool _shouldBlinkOff();
     bool _shouldBlinkOn();
@@ -40,17 +37,8 @@ class Light {
     void _stopBlinking();
 
     // pulsing
-    bool _pulsing;
-    int _pulse_up_time;
-    int _pulse_on_time;
-    int _pulse_down_time;
-    int _pulse_off_time;
-    int _pulse_times;
     int _status;
-    unsigned long _pulse_up_timer;
-    unsigned long _pulse_on_timer;
-    unsigned long _pulse_down_timer;
-    unsigned long _pulse_off_timer;
+    bool _pulsing;
     void _pulse();
     void _rising();
     void _max();
@@ -64,7 +52,6 @@ class Light {
     bool _shouldBeMin();
     int _risingValue();
     int _fallingValue();
-    void _stopEverything();
 };
 
 #endif

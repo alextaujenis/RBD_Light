@@ -1,5 +1,11 @@
-#include "Arduino.h"
-#include "Light.h"
+#include <Arduino.h>
+#include <Light.h>
+#include <Timer.h>
+
+Timer _up_timer;
+Timer _on_timer;
+Timer _down_timer;
+Timer _off_timer;
 
 Light::Light(int pin) {
   _pin = pin;
@@ -41,19 +47,19 @@ void Light::update() {
 }
 
 void Light::blink(int on_time, int off_time, int times) {
-  _blink_on_time  = on_time;
-  _blink_off_time = off_time;
-  _blink_times    = times;
+  _on_timer.setTimeout(on_time);
+  _off_timer.setTimeout(off_time);
+  _times = times;
   _stopEverything();
   _startBlinking();
 }
 
 void Light::pulse(int up_time, int on_time, int down_time, int off_time, int times) {
-  _pulse_up_time   = up_time;
-  _pulse_on_time   = on_time;
-  _pulse_down_time = down_time;
-  _pulse_off_time  = off_time;
-  _pulse_times     = times;
+  _up_timer.setTimeout(up_time);
+  _on_timer.setTimeout(on_time);
+  _down_timer.setTimeout(down_time);
+  _off_timer.setTimeout(off_time);
+  _times = times;
   _stopEverything();
   _startPulsing();
 }
@@ -65,29 +71,27 @@ void Light::_blink() {
   if(isOn() && _shouldBlinkOff()) {
     // turn it off
     off();
-    // reset the off timer
-    _blink_off_timer = millis();
-    // decrement the number of blinks left
-    _blink_times--;
-    // if this is the last blink
-    if(_blink_times == 0) {
-      _stopBlinking();
-    }
+    // restart the off timer
+    _off_timer.restart();
+    // decrement the blinks
+    _times--;
+    // stop if this is the last blink
+    if(_times == 0) {_stopBlinking();}
   }
   else if(isOff() && _shouldBlinkOn()) {
     // turn it on
     on();
-    // reset the on timer
-    _blink_on_timer = millis();
+    // restart the on timer
+    _on_timer.restart();
   }
 }
 
 bool Light::_shouldBlinkOff() {
-  return (millis() - _blink_on_timer > _blink_on_time);
+  return _on_timer.isInactive();
 }
 
 bool Light::_shouldBlinkOn() {
-  return (millis() - _blink_off_timer > _blink_off_time);
+  return _off_timer.isInactive();
 }
 
 void Light::_pulse() {
@@ -112,17 +116,17 @@ void Light::_rising() {
     pwm(_risingValue());
   }
   else {
-    _pulse_on_timer = millis();
+    _on_timer.restart();
     _status = MAX;
   }
 }
 
 bool Light::_shouldBeRising() {
-  return (millis() - _pulse_up_timer < _pulse_up_time);
+  return _up_timer.isActive();
 }
 
 int Light::_risingValue() {
-  return int(((millis() - _pulse_up_timer) / float(_pulse_up_time)) * 255);
+  return int(_up_timer.getPercentValue() * 255);
 }
 
 void Light::_max() {
@@ -130,13 +134,13 @@ void Light::_max() {
     on();
   }
   else {
-    _pulse_down_timer = millis();
+    _down_timer.restart();
     _status = FALLING;
   }
 }
 
 bool Light::_shouldBeMax() {
-  return (millis() - _pulse_on_timer < _pulse_on_time);
+  return _on_timer.isActive();
 }
 
 void Light::_falling() {
@@ -144,17 +148,17 @@ void Light::_falling() {
     pwm(_fallingValue());
   }
   else {
-    _pulse_off_timer = millis();
+    _off_timer.restart();
     _status = MIN;
   }
 }
 
 bool Light::_shouldBeFalling() {
-  return (millis() - _pulse_down_timer < _pulse_down_time);
+  return _down_timer.isActive();
 }
 
 int Light::_fallingValue() {
-  return int(abs(1 - ((millis() - _pulse_down_timer) / float(_pulse_down_time))) * 255);
+  return int(_down_timer.getInversePercentValue() * 255);
 }
 
 void Light::_min() {
@@ -162,26 +166,26 @@ void Light::_min() {
     off();
   }
   else {
-    _pulse_times--;
+    _times--;
 
-    if(_pulse_times == 0) {
+    if(_times == 0) {
       _stopPulsing();
     }
     else {
-      _pulse_up_timer = millis();
+      _up_timer.restart();
       _status = RISING;
     }
   }
 }
 
 bool Light::_shouldBeMin() {
-  return (millis() - _pulse_off_timer < _pulse_off_time);
+  return _off_timer.isActive();
 }
 
 void Light::_startPulsing() {
-  _status         = RISING;
-  _pulse_up_timer = millis();
-  _pulsing        = true;
+  _up_timer.restart();
+  _status  = RISING;
+  _pulsing = true;
 }
 
 void Light::_stopPulsing() {

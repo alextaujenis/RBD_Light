@@ -1,4 +1,5 @@
 // include files
+#include <Timer.h>
 #include <Light.h>
 
 // static values
