@@ -15,7 +15,8 @@ class Light {
     Light(int pin);
     void on();
     void off();
-    void pwm(int value); // 0 - 255
+    void setPwm(int value); // 0 - 255
+    void setPwmPercent(int value); // 0 - 100
     bool isOn();
     bool isOff();
     void update();
@@ -25,6 +26,7 @@ class Light {
     // global
     int _pin;
     int _times;
+    int _pwm_value;
     void _stopEverything();
 
     // blinking
@@ -35,6 +37,8 @@ class Light {
     bool _shouldBlinkOn();
     void _startBlinking();
     void _stopBlinking();
+    void _blinkOff();
+    void _blinkOn();
 
     // pulsing
     int _status;

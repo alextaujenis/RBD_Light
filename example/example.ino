@@ -3,7 +3,7 @@
 #include <Light.h>
 
 // static values
-int BAUD = 11500;
+int BAUD = 115200;
 
 // variables
 String serial_buffer = "";

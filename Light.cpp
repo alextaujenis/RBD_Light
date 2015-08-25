@@ -12,21 +12,31 @@ Light::Light(int pin) {
 }
 
 void Light::on() {
-  pwm(255);
+  setPwm(255);
 }
 
 void Light::off() {
-  pwm(0);
+  setPwm(0);
 }
 
-void Light::pwm(int value) {
-  if(value > 0) {
-    _on = true;
+void Light::setPwm(int value) {
+  if(value > -1 && value < 256){
+    analogWrite(_pin, value);
+    _pwm_value = value;
+    _on = bool(value);
   }
-  else {
-    _on = false;
-  }
-  analogWrite(_pin, value);
+}
+
+void Light::setPwmPercent(int value) {
+  setPwm(int(value / 100.0 * 255));
+}
+
+int Light::getPwm() {
+  return _pwm_value;
+}
+
+int Light::getPwmPercent() {
+  return int(getPwm() / 255 * 100);
 }
 
 bool Light::isOn() {
@@ -69,29 +79,31 @@ void Light::pulse(int up_time, int on_time, int down_time, int off_time, int tim
 
 void Light::_blink() {
   if(isOn() && _shouldBlinkOff()) {
-    // turn it off
-    off();
-    // restart the off timer
-    _off_timer.restart();
-    // decrement the blinks
-    _times--;
-    // stop if this is the last blink
-    if(_times == 0) {_stopBlinking();}
+    _blinkOff();
   }
   else if(isOff() && _shouldBlinkOn()) {
-    // turn it on
-    on();
-    // restart the on timer
-    _on_timer.restart();
+    _blinkOn();
   }
+}
+
+void Light::_blinkOff() {
+  off();
+  _off_timer.restart();
+  _times--;
+  if(_times == 0) {_stopBlinking();}
+}
+
+void Light::_blinkOn() {
+  on();
+  _on_timer.restart();
 }
 
 bool Light::_shouldBlinkOff() {
-  return _on_timer.isInactive();
+  return _on_timer.isExpired();
 }
 
 bool Light::_shouldBlinkOn() {
-  return _off_timer.isInactive();
+  return _off_timer.isExpired();
 }
 
 void Light::_pulse() {
@@ -113,7 +125,7 @@ void Light::_pulse() {
 
 void Light::_rising() {
   if(_shouldBeRising()) {
-    pwm(_risingValue());
+    setPwm(_risingValue());
   }
   else {
     _on_timer.restart();
@@ -145,7 +157,7 @@ bool Light::_shouldBeMax() {
 
 void Light::_falling() {
   if(_shouldBeFalling()) {
-    pwm(_fallingValue());
+    setPwm(_fallingValue());
   }
   else {
     _off_timer.restart();
