@@ -1,3 +1,7 @@
+// Arduino Light Library - A simple real-time library for controlling many lights
+// Copyright 2015 Alex Taujenis
+// MIT License
+
 #include <Arduino.h>
 #include <Light.h>
 #include <Timer.h>
@@ -19,6 +23,23 @@ void Light::off() {
   setPwm(0);
 }
 
+bool Light::isOn() {
+  return _on;
+}
+
+bool Light::isOff() {
+  return !_on;
+}
+
+void Light::update() {
+  if(_blinking) {
+    _blink();
+  }
+  if(_pulsing) {
+    _pulse();
+  }
+}
+
 void Light::setPwm(int value) {
   if(value > -1 && value < 256){
     analogWrite(_pin, value);
@@ -36,24 +57,7 @@ int Light::getPwm() {
 }
 
 int Light::getPwmPercent() {
-  return int(getPwm() / 255 * 100);
-}
-
-bool Light::isOn() {
-  return _on;
-}
-
-bool Light::isOff() {
-  return !_on;
-}
-
-void Light::update() {
-  if(_blinking) {
-    _blink();
-  }
-  if(_pulsing) {
-    _pulse();
-  }
+  return int(getPwm() / 255.0 * 100);
 }
 
 void Light::blink(int on_time, int off_time, int times) {
@@ -138,7 +142,7 @@ bool Light::_shouldBeRising() {
 }
 
 int Light::_risingValue() {
-  return int(_up_timer.getPercentValue() * 255);
+  return int(_up_timer.getPercentValue() / 100.0 * 255);
 }
 
 void Light::_max() {
@@ -170,7 +174,7 @@ bool Light::_shouldBeFalling() {
 }
 
 int Light::_fallingValue() {
-  return int(_down_timer.getInversePercentValue() * 255);
+  return int(_down_timer.getInversePercentValue() / 100.0 * 255);
 }
 
 void Light::_min() {

@@ -1,4 +1,6 @@
-// light.h - A high-level library for controlling LEDs
+// Arduino Light Library - A simple real-time library for controlling many lights
+// Copyright 2015 Alex Taujenis
+// MIT License
 
 #ifndef LIGHT_H
 #define LIGHT_H
@@ -15,11 +17,13 @@ class Light {
     Light(int pin);
     void on();
     void off();
-    void setPwm(int value); // 0 - 255
-    void setPwmPercent(int value); // 0 - 100
     bool isOn();
     bool isOff();
     void update();
+    void setPwm(int value);        // 0 - 255
+    void setPwmPercent(int value); // 0 - 100
+    int getPwm();                  // 0 - 255
+    int getPwmPercent();           // 0 - 100
     void blink(int on_time, int off_time, int times);
     void pulse(int up_time, int on_time, int down_time, int off_time, int times);
   private:
