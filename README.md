@@ -15,12 +15,12 @@ The Light Library requires the Timer Library, but you are not required to use th
 0. Load the example sketch on to an Arduino
 0. Watch the onboad Arduino LED 13 slowly pulse on and off
 
-##[example.ino](https://github.com/alextaujenis/Light/blob/master/example/example.ino)
+##[example.ino](https://github.com/alextaujenis/RBD_Light/blob/master/example/example.ino)
 
-    #include <Timer.h>
-    #include <Light.h>
+    #include <RBD_Timer.h>
+    #include <RBD_Light.h>
 
-    Light light(13);
+    RBD::Light light(13);
 
     void setup() {
       light.pulse(2500,250,2000,750,1000);
@@ -48,7 +48,7 @@ The Light Library requires the Timer Library, but you are not required to use th
 ##constructor(pin)
 Pass in an integer for the Arduino pin to create an instance of this class.
 
-    Light light(13);
+    RBD::Light light(13);
 
 ##on()
 Turn on the light.
