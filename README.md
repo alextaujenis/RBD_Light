@@ -46,55 +46,76 @@ The Light Library requires the Timer Library, but you are not required to use th
 * [pulse(up\_time, on\_time, down\_time, off\_time, times)](#pulseup_time-on_time-down_time-off_time-times)
 
 ##constructor(pin)
-Pass in an integer for the Arduino pin to create an instance of this class.
+Create a new light and pass in the Arduino pin number.
 
-    RBD::Light light(13);
+		RBD::Light light(13);
+
+		void setup() {
+		  ...
+		}
 
 ##on()
 Turn on the light.
 
-    light.on();
+		void loop() {
+		  light.on();
+		}
 
 ##off()
 Turn off the light.
 
-    light.off();
-
-
-##isOn()
-Returns true if the light is 100% on.
-
-    light.isOn();
-
-##isOff()
-Returns true if the light is 0% on.
-
-    light.isOff();
-
-##update()
-Keep the light moving in real-time. This must be called continuously from within loop() in order to [blink()](#blinkon_time-off_time-times) or [pulse()](#pulseup_time-on_time-down_time-off_time-times) the light.
-
-    light.update();
+		void loop() {
+		  light.off();
+		}
 
 ##setPwm(value)
 Pass in an integer between 0 - 255 to set the brightness of the light.
 
-    light.setPwm(200);
+		void loop() {
+		  light.setPwm(200);
+		}
 
 ##setPwmPercent(value)
 Pass in an integer between 0 - 100 to set the brightness of the light.
 
-    light.setPwmPercent(75);
+		void loop() {
+		  light.setPwmPercent(75);
+		}
+
+##isOn()
+Returns true if the current light brightness is at 100%.
+
+		void loop() {
+		  light.isOn();
+		}
+
+##isOff()
+Returns true if the current light brightness is at 0%.
+
+		void loop() {
+		  light.isOff();
+		}
 
 ##getPwm()
 Returns an integer of the current light brightness from 0 - 255.
 
-    light.getPwm();
+		void loop() {
+		  light.getPwm();
+		}
 
 ##getPwmPercent()
 Returns an integer of the current light percentage brightness from 0 - 100.
 
-    light.getPwmPercent();
+		void loop() {
+		  light.getPwmPercent();
+		}
+
+##update()
+Keep the light moving in real-time. This must be called continuously from within loop() in order to [blink()](#blinkon_time-off_time-times) or [pulse()](#pulseup_time-on_time-down_time-off_time-times) the light.
+
+		void loop() {
+		  light.update();
+		}
 
 ##blink(on\_time, off\_time, times)
 Pass in integers for the values in milliseconds.
@@ -105,11 +126,13 @@ Pass in integers for the values in milliseconds.
 
 Example:
 
-    // blink on for 1 second
-    // off for 1/2 second
-    // do this 25 times
+		void setup() {
+		  light.blink(1000,500,25);
+		}
 
-    light.blink(1000,500,25);
+		void loop() {
+		  light.update();
+		}
 
 ##pulse(up\_time, on\_time, down\_time, off\_time, times)
 Pass in integers for the values in milliseconds.
@@ -122,13 +145,13 @@ Pass in integers for the values in milliseconds.
 
 Example:
 
-    // fade up for 2.5 seconds
-    // stay on for 1/4 second
-    // fade down for 2 seconds
-    // stay off for 3/4 second
-    // do this 1000 times
+		void setup() {
+		  light.pulse(2500,250,2000,750,1000);
+		}
 
-    light.pulse(2500,250,2000,750,1000)
+		void loop() {
+		  light.update();
+		}
 
 #License
 This code is available under the [MIT License](http://opensource.org/licenses/mit-license.php).

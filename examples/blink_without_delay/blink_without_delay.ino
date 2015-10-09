@@ -1,4 +1,4 @@
-// Arduino RBD Light Library Example - Slowly pulse the Arduino LED in real-time
+// Arduino RBD Light Library Example - Blink the Arduino LED in real-time with no delay
 // Copyright 2015 Alex Taujenis
 // MIT License
 
@@ -8,7 +8,7 @@
 RBD::Light light(13);
 
 void setup() {
-  light.pulse(2500,250,2000,750,1000);
+  light.blink(100,100);
 }
 
 void loop() {

@@ -26,7 +26,7 @@ namespace RBD {
   }
 
   bool Light::isOn() {
-    return _on;
+    return getPwm() == 255;
   }
 
   bool Light::isOff() {
@@ -149,7 +149,9 @@ namespace RBD {
 
   void Light::_max() {
     if(_shouldBeMax()) {
-      on();
+      if(!isOn()) {
+        on();
+      }
     }
     else {
       _down_timer.restart();
@@ -181,7 +183,9 @@ namespace RBD {
 
   void Light::_min() {
     if(_shouldBeMin()) {
-      off();
+      if(getPwm() > 0) {
+        off();
+      }
     }
     else {
       _times--;

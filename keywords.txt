@@ -1,0 +1,12 @@
+Light	KEYWORD1
+on	KEYWORD2
+off	KEYWORD2
+isOn	KEYWORD2
+isOff	KEYWORD2
+update	KEYWORD2
+setPwm	KEYWORD2
+setPwmPercent	KEYWORD2
+getPwm 	KEYWORD2
+getPwmPercent	KEYWORD2
+blink	KEYWORD2
+pulse	KEYWORD2
