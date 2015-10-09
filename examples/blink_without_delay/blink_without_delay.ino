@@ -8,7 +8,7 @@
 RBD::Light light(13);
 
 void setup() {
-  light.blink(100,100);
+  light.blink(100,100,999);
 }
 
 void loop() {

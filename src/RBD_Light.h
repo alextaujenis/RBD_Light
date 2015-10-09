@@ -35,7 +35,6 @@ namespace RBD {
       void _stopEverything();
 
       // blinking
-      bool _on;
       bool _blinking;
       void _blink();
       bool _shouldBlinkOff();

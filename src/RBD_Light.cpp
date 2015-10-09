@@ -1,7 +1,3 @@
-// Arduino RBD Light Library - A simple real-time library for controlling many lights
-// Copyright 2015 Alex Taujenis
-// MIT License
-
 #include <Arduino.h>
 #include <RBD_Light.h>
 #include <RBD_Timer.h>
@@ -30,7 +26,7 @@ namespace RBD {
   }
 
   bool Light::isOff() {
-    return !_on;
+    return getPwm() == 0;
   }
 
   void Light::update() {
@@ -46,7 +42,6 @@ namespace RBD {
     if(value > -1 && value < 256){
       analogWrite(_pin, value);
       _pwm_value = value;
-      _on = bool(value);
     }
   }
 
@@ -183,7 +178,7 @@ namespace RBD {
 
   void Light::_min() {
     if(_shouldBeMin()) {
-      if(getPwm() > 0) {
+      if(!isOff()) {
         off();
       }
     }
