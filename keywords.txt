@@ -9,4 +9,4 @@ setPwmPercent	KEYWORD2
 getPwm 	KEYWORD2
 getPwmPercent	KEYWORD2
 blink	KEYWORD2
-pulse	KEYWORD2
+fade	KEYWORD2

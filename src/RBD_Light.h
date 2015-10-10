@@ -1,4 +1,5 @@
-// Arduino Light Library - A simple real-time library for controlling many lights
+// Arduino RBD Light Library v1.0.0 - Control many lights in real-time, blink and fade without delay.
+// https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License
 
@@ -25,15 +26,19 @@ namespace RBD {
       void setPwmPercent(int value); // 0 - 100
       int getPwm();                  // 0 - 255
       int getPwmPercent();           // 0 - 100
-      void blink(int on_time, int off_time, int times);
-      void pulse(int up_time, int on_time, int down_time, int off_time, int times);
+      // blink & fade
+      void blink(unsigned long on_time, unsigned long off_time, int times);
+      void fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time, int times);
+      // overloaded blink & fade for optional last parameter
+      void blink(unsigned long on_time, unsigned long off_time);
+      void fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time);
     private:
       // global
       int _pin;
       int _times;
       int _pwm_value;
+      bool _forever = false;
       void _stopEverything();
-
       // blinking
       bool _blinking;
       void _blink();
@@ -43,17 +48,16 @@ namespace RBD {
       void _stopBlinking();
       void _blinkOff();
       void _blinkOn();
-
-      // pulsing
+      // fading
       int _status;
-      bool _pulsing;
-      void _pulse();
+      bool _fading;
+      void _fade();
       void _rising();
       void _max();
       void _falling();
       void _min();
-      void _startPulsing();
-      void _stopPulsing();
+      void _startFading();
+      void _stopFading();
       bool _shouldBeRising();
       bool _shouldBeMax();
       bool _shouldBeFalling();

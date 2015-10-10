@@ -1,6 +1,11 @@
+// Arduino RBD Light Library v1.0.0 - Control many lights in real-time, blink and fade without delay.
+// https://github.com/alextaujenis/RBD_Light
+// Copyright 2015 Alex Taujenis
+// MIT License
+
 #include <Arduino.h>
-#include <RBD_Light.h>
-#include <RBD_Timer.h>
+#include <RBD_Timer.h> // https://github.com/alextaujenis/RBD_Timer
+#include <RBD_Light.h> // https://github.com/alextaujenis/RBD_Light
 
 namespace RBD {
 
@@ -33,8 +38,8 @@ namespace RBD {
     if(_blinking) {
       _blink();
     }
-    if(_pulsing) {
-      _pulse();
+    if(_fading) {
+      _fade();
     }
   }
 
@@ -57,7 +62,8 @@ namespace RBD {
     return int(getPwm() / 255.0 * 100);
   }
 
-  void Light::blink(int on_time, int off_time, int times) {
+  void Light::blink(unsigned long on_time, unsigned long off_time, int times) {
+    _forever = false;
     _on_timer.setTimeout(on_time);
     _off_timer.setTimeout(off_time);
     _times = times;
@@ -65,14 +71,27 @@ namespace RBD {
     _startBlinking();
   }
 
-  void Light::pulse(int up_time, int on_time, int down_time, int off_time, int times) {
+  // unlimited times
+  void Light::blink(unsigned long on_time, unsigned long off_time) {
+    _forever = true;
+    blink(on_time, off_time, 0);
+  }
+
+  void Light::fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time, int times) {
+    _forever = false;
     _up_timer.setTimeout(up_time);
     _on_timer.setTimeout(on_time);
     _down_timer.setTimeout(down_time);
     _off_timer.setTimeout(off_time);
     _times = times;
     _stopEverything();
-    _startPulsing();
+    _startFading();
+  }
+
+  // unlimited times
+  void Light::fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time) {
+    _forever = true;
+    fade(up_time, on_time, down_time, off_time, 0);
   }
 
 
@@ -90,8 +109,10 @@ namespace RBD {
   void Light::_blinkOff() {
     off();
     _off_timer.restart();
-    _times--;
-    if(_times == 0) {_stopBlinking();}
+    if(!_forever) {
+      _times--;
+      if(_times == 0) {_stopBlinking();}
+    }
   }
 
   void Light::_blinkOn() {
@@ -107,7 +128,7 @@ namespace RBD {
     return _off_timer.isExpired();
   }
 
-  void Light::_pulse() {
+  void Light::_fade() {
     switch(_status) {
       case RISING:
         _rising();
@@ -183,10 +204,10 @@ namespace RBD {
       }
     }
     else {
-      _times--;
+      if(!_forever) {_times--;}
 
-      if(_times == 0) {
-        _stopPulsing();
+      if(_times == 0 && !_forever) {
+        _stopFading();
       }
       else {
         _up_timer.restart();
@@ -199,14 +220,14 @@ namespace RBD {
     return _off_timer.isActive();
   }
 
-  void Light::_startPulsing() {
+  void Light::_startFading() {
     _up_timer.restart();
     _status  = RISING;
-    _pulsing = true;
+    _fading = true;
   }
 
-  void Light::_stopPulsing() {
-    _pulsing = false;
+  void Light::_stopFading() {
+    _fading = false;
   }
 
   void Light::_startBlinking() {
@@ -219,6 +240,6 @@ namespace RBD {
 
   void Light::_stopEverything() {
     _stopBlinking();
-    _stopPulsing();
+    _stopFading();
   }
 }

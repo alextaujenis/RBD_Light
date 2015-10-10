@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v1.0.0 Example - Blink the Arduino LED in real-time with no delay.
+// Arduino RBD Light Library v1.0.0 Example - Fade the Arduino LED in real-time with no delay.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License
@@ -9,7 +9,7 @@
 RBD::Light light(13);
 
 void setup() {
-  light.blink(250,250);
+  light.fade(500,250,500,250);
 }
 
 void loop() {
