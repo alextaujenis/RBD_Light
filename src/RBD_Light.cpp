@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v1.0.0 - Control many lights in real-time, blink and fade without delay.
+// Arduino RBD Light Library v1.0.2 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License
