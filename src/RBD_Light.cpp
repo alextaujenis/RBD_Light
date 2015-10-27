@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v1.0.3 - Control many lights.
+// Arduino RBD Light Library v1.0.4 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License
@@ -16,6 +16,7 @@ namespace RBD {
 
   Light::Light(int pin) {
     _pin = pin;
+    pinMode(_pin, OUTPUT);
   }
 
   void Light::on() {
