@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v1.0.4 - Control many lights.
+// Arduino RBD Light Library v1.0.5 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License
@@ -8,13 +8,8 @@
 #include <RBD_Light.h> // https://github.com/alextaujenis/RBD_Light
 
 namespace RBD {
-
-  Timer _up_timer;
-  Timer _on_timer;
-  Timer _down_timer;
-  Timer _off_timer;
-
-  Light::Light(int pin) {
+  Light::Light(int pin)
+  : _up_timer(), _on_timer(), _down_timer(), _off_timer() {
     _pin = pin;
     pinMode(_pin, OUTPUT);
   }
