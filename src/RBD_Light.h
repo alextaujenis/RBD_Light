@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v1.0.5 - Control many lights.
+// Arduino RBD Light Library v2.0.0 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License
@@ -23,10 +23,10 @@ namespace RBD {
       bool isOn();
       bool isOff();
       void update();
-      void setPwm(int value);        // 0 - 255
-      void setPwmPercent(int value); // 0 - 100
-      int getPwm();                  // 0 - 255
-      int getPwmPercent();           // 0 - 100
+      void setBrightness(int value);        // 0 - 255
+      void setBrightnessPercent(int value); // 0 - 100
+      int getBrightness();                  // 0 - 255
+      int getBrightnessPercent();           // 0 - 100
       // blink & fade
       void blink(unsigned long on_time, unsigned long off_time, int times);
       void fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time, int times);

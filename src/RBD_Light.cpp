@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v1.0.5 - Control many lights.
+// Arduino RBD Light Library v2.0.0 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License
@@ -15,19 +15,19 @@ namespace RBD {
   }
 
   void Light::on() {
-    setPwm(255);
+    setBrightness(255);
   }
 
   void Light::off() {
-    setPwm(0);
+    setBrightness(0);
   }
 
   bool Light::isOn() {
-    return getPwm() == 255;
+    return getBrightness() == 255;
   }
 
   bool Light::isOff() {
-    return getPwm() == 0;
+    return getBrightness() == 0;
   }
 
   void Light::update() {
@@ -39,23 +39,23 @@ namespace RBD {
     }
   }
 
-  void Light::setPwm(int value) {
+  void Light::setBrightness(int value) {
     if(value > -1 && value < 256){
       analogWrite(_pin, value);
       _pwm_value = value;
     }
   }
 
-  void Light::setPwmPercent(int value) {
-    setPwm(int(value / 100.0 * 255));
+  void Light::setBrightnessPercent(int value) {
+    setBrightness(int(value / 100.0 * 255));
   }
 
-  int Light::getPwm() {
+  int Light::getBrightness() {
     return _pwm_value;
   }
 
-  int Light::getPwmPercent() {
-    return int(getPwm() / 255.0 * 100);
+  int Light::getBrightnessPercent() {
+    return int(getBrightness() / 255.0 * 100);
   }
 
   void Light::blink(unsigned long on_time, unsigned long off_time, int times) {
@@ -143,7 +143,7 @@ namespace RBD {
 
   void Light::_rising() {
     if(_shouldBeRising()) {
-      setPwm(_risingValue());
+      setBrightness(_risingValue());
     }
     else {
       _on_timer.restart();
@@ -177,7 +177,7 @@ namespace RBD {
 
   void Light::_falling() {
     if(_shouldBeFalling()) {
-      setPwm(_fallingValue());
+      setBrightness(_fallingValue());
     }
     else {
       _off_timer.restart();

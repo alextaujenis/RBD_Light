@@ -4,9 +4,9 @@ off	KEYWORD2
 isOn	KEYWORD2
 isOff	KEYWORD2
 update	KEYWORD2
-setPwm	KEYWORD2
-setPwmPercent	KEYWORD2
-getPwm		KEYWORD2
-getPwmPercent	KEYWORD2
+setBrightness	KEYWORD2
+setBrightnessPercent	KEYWORD2
+getBrightness		KEYWORD2
+getBrightnessPercent	KEYWORD2
 blink	KEYWORD2
 fade	KEYWORD2
