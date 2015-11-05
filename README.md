@@ -1,4 +1,4 @@
-#Arduino Light Library v2.0.0
+#Arduino Light Library v2.0.1
 Control many lights and blink without delay using commands such as on(), off(), blink(), and fade().
 
 * [Documentation](http://robotsbigdata.com/docs-arduino-light.html)
