@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.0.2 Example - Fade the Arduino LED without delay.
+// Arduino RBD Light Library v2.1.0 Example - Fade the Arduino LED without delay.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License

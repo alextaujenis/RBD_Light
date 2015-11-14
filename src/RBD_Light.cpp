@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.0.2 - Control many lights.
+// Arduino RBD Light Library v2.1.0 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License
@@ -14,12 +14,12 @@ namespace RBD {
     pinMode(_pin, OUTPUT);
   }
 
-  void Light::on() {
-    setBrightness(255);
+  void Light::on(bool stop_everything) { // default: true
+    setBrightness(255, stop_everything);
   }
 
-  void Light::off() {
-    setBrightness(0);
+  void Light::off(bool stop_everything) { // default: true
+    setBrightness(0, stop_everything);
   }
 
   bool Light::isOn() {
@@ -39,15 +39,18 @@ namespace RBD {
     }
   }
 
-  void Light::setBrightness(int value) {
+  void Light::setBrightness(int value, bool stop_everything) {
     if(value > -1 && value < 256){
+      if(stop_everything) {
+        _stopEverything();
+      }
       analogWrite(_pin, value);
       _pwm_value = value;
     }
   }
 
-  void Light::setBrightnessPercent(int value) {
-    setBrightness(int(value / 100.0 * 255));
+  void Light::setBrightnessPercent(int value, bool stop_everything) {
+    setBrightness(int(value / 100.0 * 255), stop_everything);
   }
 
   int Light::getBrightness() {
@@ -103,7 +106,7 @@ namespace RBD {
   }
 
   void Light::_blinkOff() {
-    off();
+    off(false); // don't stop everything
     _off_timer.restart();
     if(!_forever) {
       _times--;
@@ -112,7 +115,7 @@ namespace RBD {
   }
 
   void Light::_blinkOn() {
-    on();
+    on(false); // don't stop everything
     _on_timer.restart();
   }
 
@@ -143,7 +146,7 @@ namespace RBD {
 
   void Light::_rising() {
     if(_shouldBeRising()) {
-      setBrightness(_risingValue());
+      setBrightness(_risingValue(), false); // don't stop everything
     }
     else {
       _on_timer.restart();
@@ -162,7 +165,7 @@ namespace RBD {
   void Light::_max() {
     if(_shouldBeMax()) {
       if(!isOn()) {
-        on();
+        on(false); // don't stop everything
       }
     }
     else {
@@ -177,7 +180,7 @@ namespace RBD {
 
   void Light::_falling() {
     if(_shouldBeFalling()) {
-      setBrightness(_fallingValue());
+      setBrightness(_fallingValue(), false); // don't stop everything
     }
     else {
       _off_timer.restart();
@@ -196,7 +199,7 @@ namespace RBD {
   void Light::_min() {
     if(_shouldBeMin()) {
       if(!isOff()) {
-        off();
+        off(false); // don't stop everything
       }
     }
     else {
