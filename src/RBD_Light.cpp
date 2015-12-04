@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.0 - Control many lights.
+// Arduino RBD Light Library v2.1.1 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License

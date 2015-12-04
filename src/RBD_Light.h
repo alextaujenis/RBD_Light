@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.0 - Control many lights.
+// Arduino RBD Light Library v2.1.1 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2015 Alex Taujenis
 // MIT License
@@ -9,13 +9,13 @@
 #include <Arduino.h>
 #include <RBD_Timer.h>
 
-const int _RISING  = 0;
-const int _MAX     = 1;
-const int _FALLING = 2;
-const int _MIN     = 3;
-
 namespace RBD {
   class Light {
+    static const int _RISING  = 0;
+    static const int _MAX     = 1;
+    static const int _FALLING = 2;
+    static const int _MIN     = 3;
+
     public:
       Light(int pin);
       void on(bool stop_everything = true);
