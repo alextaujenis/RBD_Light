@@ -1,6 +1,6 @@
-// Arduino RBD Light Library v2.1.1 - Control many lights.
+// Arduino RBD Light Library v2.1.2 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
-// Copyright 2015 Alex Taujenis
+// Copyright 2016 Alex Taujenis
 // MIT License
 
 #include <Arduino.h>
@@ -128,7 +128,7 @@ namespace RBD {
   }
 
   void Light::_fade() {
-    switch(_status) {
+    switch(_state) {
       case _RISING:
         _rising();
         break;
@@ -150,7 +150,7 @@ namespace RBD {
     }
     else {
       _on_timer.restart();
-      _status = _MAX;
+      _state = _MAX;
     }
   }
 
@@ -170,7 +170,7 @@ namespace RBD {
     }
     else {
       _down_timer.restart();
-      _status = _FALLING;
+      _state = _FALLING;
     }
   }
 
@@ -184,7 +184,7 @@ namespace RBD {
     }
     else {
       _off_timer.restart();
-      _status = _MIN;
+      _state = _MIN;
     }
   }
 
@@ -210,7 +210,7 @@ namespace RBD {
       }
       else {
         _up_timer.restart();
-        _status = _RISING;
+        _state = _RISING;
       }
     }
   }
@@ -221,7 +221,7 @@ namespace RBD {
 
   void Light::_startFading() {
     _up_timer.restart();
-    _status  = _RISING;
+    _state  = _RISING;
     _fading = true;
   }
 

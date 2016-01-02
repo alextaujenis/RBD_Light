@@ -1,6 +1,6 @@
-// Arduino RBD Light Library v2.1.1 Example - Blink the Arduino LED without delay.
+// Arduino RBD Light Library v2.1.2 Example - Blink the Arduino LED without delay.
 // https://github.com/alextaujenis/RBD_Light
-// Copyright 2015 Alex Taujenis
+// Copyright 2016 Alex Taujenis
 // MIT License
 
 #include <RBD_Timer.h> // https://github.com/alextaujenis/RBD_Timer

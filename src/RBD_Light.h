@@ -1,6 +1,6 @@
-// Arduino RBD Light Library v2.1.1 - Control many lights.
+// Arduino RBD Light Library v2.1.2 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
-// Copyright 2015 Alex Taujenis
+// Copyright 2016 Alex Taujenis
 // MIT License
 
 #ifndef RBD_LIGHT_H
@@ -11,11 +11,6 @@
 
 namespace RBD {
   class Light {
-    static const int _RISING  = 0;
-    static const int _MAX     = 1;
-    static const int _FALLING = 2;
-    static const int _MIN     = 3;
-
     public:
       Light(int pin);
       void on(bool stop_everything = true);
@@ -27,10 +22,9 @@ namespace RBD {
       void setBrightnessPercent(int value, bool stop_everything = true); // 0 - 100
       int getBrightness();        // 0 - 255
       int getBrightnessPercent(); // 0 - 100
-      // blink & fade
       void blink(unsigned long on_time, unsigned long off_time, int times);
       void fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time, int times);
-      // overloaded blink & fade for optional last parameter
+      // overloaded blink & fade for unlimited times
       void blink(unsigned long on_time, unsigned long off_time);
       void fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time);
     private:
@@ -50,8 +44,8 @@ namespace RBD {
       void _blinkOff();
       void _blinkOn();
       // fading
-      int _status;
       bool _fading;
+      enum {_RISING, _MAX, _FALLING, _MIN} _state;  // internal state
       void _fade();
       void _rising();
       void _max();
