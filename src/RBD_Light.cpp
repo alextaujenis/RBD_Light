@@ -10,6 +10,13 @@
 namespace RBD {
   Light::Light(int pin)
   : _up_timer(), _on_timer(), _down_timer(), _off_timer() {
+    if (pin != -1) {
+      _pin = pin;
+      pinMode(_pin, OUTPUT);
+    }
+  }
+
+  void Light::setupPin(int pin) {
     _pin = pin;
     pinMode(_pin, OUTPUT);
   }
@@ -40,7 +47,7 @@ namespace RBD {
   }
 
   void Light::setBrightness(int value, bool stop_everything) {
-    if(value > -1 && value < 256){
+    if(value > -1 && value < 256 && _pin != -1){
       if(stop_everything) {
         _stopEverything();
       }
