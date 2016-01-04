@@ -10,7 +10,16 @@
 namespace RBD {
   Light::Light(int pin)
   : _up_timer(), _on_timer(), _down_timer(), _off_timer() {
+    if (pin != -1) {
+      _pin = pin;
+      pinMode(_pin, OUTPUT);
+    }
+  }
+
+  void Light::setupPin(int pin, bool output_pin_digital, bool output_inverted) {
     _pin = pin;
+    _output_pin_digital = output_pin_digital;
+    _output_inverted = output_inverted;
     pinMode(_pin, OUTPUT);
   }
 
@@ -40,11 +49,20 @@ namespace RBD {
   }
 
   void Light::setBrightness(int value, bool stop_everything) {
-    if(value > -1 && value < 256){
+    if(value > -1 && value < 256 && _pin != -1){
       if(stop_everything) {
         _stopEverything();
       }
-      analogWrite(_pin, value);
+      const int actual_output_value = _output_inverted ? (255 - value) : value;
+      if (_output_pin_digital) {
+        if (actual_output_value >= 127) {
+          digitalWrite(_pin, HIGH);
+        } else {
+          digitalWrite(_pin, LOW);
+        }
+      } else {
+        analogWrite(_pin, actual_output_value);
+      }
       _pwm_value = value;
     }
   }
