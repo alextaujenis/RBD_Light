@@ -13,7 +13,7 @@ namespace RBD {
   class Light {
     public:
       Light(int pin = -1);
-      void setupPin(int pin);
+      void setupPin(int pin, bool output_pin_digital = false, bool output_inverted = false);
       void on(bool stop_everything = true);
       void off(bool stop_everything = true);
       bool isOn();
@@ -31,6 +31,8 @@ namespace RBD {
     private:
       // global
       int _pin = -1;
+      bool _output_pin_digital = false;
+      bool _output_inverted = false;
       int _times;
       int _pwm_value;
       bool _forever = false;
