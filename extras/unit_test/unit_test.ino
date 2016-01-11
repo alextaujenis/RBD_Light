@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.2 - Unit test coverage.
+// Arduino RBD Light Library v2.1.3 - Unit test coverage.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2016 Alex Taujenis
 // MIT License
@@ -29,8 +29,27 @@ bool isOff() {
 
 // on
   test(on_should_turn_on_the_light) {
-    assertFalse(isOn());
     light.on();
+    assertTrue(isOn());
+    testCleanup();
+  }
+
+  test(on_should_stop_the_light_from_blinking) {
+    light.blink(10,10);
+    light.update();
+    light.on();
+    delay(15);
+    light.update();
+    assertTrue(isOn());
+    testCleanup();
+  }
+
+  test(on_should_stop_the_light_from_fading) {
+    light.fade(10,10,10,10);
+    light.update();
+    light.on();
+    delay(5);
+    light.update();
     assertTrue(isOn());
     testCleanup();
   }
@@ -38,8 +57,27 @@ bool isOff() {
 // off
   test(off_should_turn_off_the_light) {
     light.on();
-    assertFalse(isOff());
     light.off();
+    assertTrue(isOff());
+    testCleanup();
+  }
+
+  test(off_should_stop_the_light_from_blinking) {
+    light.blink(10,10);
+    light.update();
+    light.off();
+    delay(5);
+    light.update();
+    assertTrue(isOff());
+    testCleanup();
+  }
+
+  test(off_should_stop_the_light_from_fading) {
+    light.fade(10,10,10,10);
+    light.update();
+    light.off();
+    delay(15);
+    light.update();
     assertTrue(isOff());
     testCleanup();
   }
@@ -207,6 +245,36 @@ bool isOff() {
     testCleanup();
   }
 
+  test(setBrightness_should_stop_the_light_from_blinking) {
+    // calibrate
+    light.setBrightness(123);
+    pulse1 = getPulseTime();
+    light.off();
+    // start test
+    light.blink(10,10);
+    light.update();
+    light.setBrightness(123);
+    delay(15);
+    light.update();
+    assertWithinTolerance(getPulseTime(), pulse1, 15);
+    testCleanup();
+  }
+
+  test(setBrightness_should_stop_the_light_from_fading) {
+    // calibrate
+    light.setBrightness(123);
+    pulse1 = getPulseTime();
+    light.off();
+    // start test
+    light.fade(10,10,10,10);
+    light.update();
+    light.setBrightness(123);
+    delay(35);
+    light.update();
+    assertWithinTolerance(getPulseTime(), pulse1, 15);
+    testCleanup();
+  }
+
 // setBrightnessPercent
   test(setBrightnessPercent_should_increase_the_brightness) {
     light.setBrightnessPercent(1);
@@ -261,6 +329,36 @@ bool isOff() {
     testCleanup();
   }
 
+  test(setBrightnessPercent_should_stop_the_light_from_blinking) {
+    // calibrate
+    light.setBrightnessPercent(35);
+    pulse1 = getPulseTime();
+    light.off();
+    // start test
+    light.blink(10,10);
+    light.update();
+    light.setBrightnessPercent(35);
+    delay(15);
+    light.update();
+    assertWithinTolerance(getPulseTime(), pulse1, 15);
+    testCleanup();
+  }
+
+  test(setBrightnessPercent_should_stop_the_light_from_fading) {
+    // calibrate
+    light.setBrightnessPercent(35);
+    pulse1 = getPulseTime();
+    light.off();
+    // start test
+    light.fade(10,10,10,10);
+    light.update();
+    light.setBrightnessPercent(35);
+    delay(35);
+    light.update();
+    assertWithinTolerance(getPulseTime(), pulse1, 15);
+    testCleanup();
+  }
+
 // getBrightness
   test(getBrightness_returns_the_brightness) {
     light.setBrightness(123);
@@ -291,14 +389,14 @@ bool isOff() {
 
 // blink
   test(blink_should_turn_the_light_on_and_off) {
-    light.blink(100,100,1);
+    light.blink(10,10,1);
     // blink 1
     light.update();
     assertTrue(isOn());
-    delay(101);
+    delay(11);
     light.update();
     assertFalse(isOn());
-    delay(101);
+    delay(11);
     // validate finished
     light.update();
     assertFalse(isOn());
@@ -307,22 +405,22 @@ bool isOff() {
   }
 
   test(blink_should_turn_the_light_on_and_off_multiple_times) {
-    light.blink(100,100,2);
+    light.blink(10,10,2);
     // blink 1
     light.update();
     assertTrue(isOn());
-    delay(101);
+    delay(11);
     light.update();
     assertFalse(isOn());
-    delay(101);
+    delay(11);
     // blink 2
     light.update();
     assertTrue(isOn());
-    delay(101);
+    delay(11);
     light.update();
     assertFalse(isOn());
     // validate finished
-    delay(101);
+    delay(11);
     light.update();
     assertFalse(isOn());
     // cleanup
@@ -331,25 +429,25 @@ bool isOff() {
 
 // blink: overloaded constructor
   test(overloaded_blink_should_turn_the_light_on_and_off_forever) {
-    light.blink(100,100);
+    light.blink(10,10);
     // blink 1
     light.update();
     assertTrue(isOn());
-    delay(101);
+    delay(11);
     light.update();
     assertFalse(isOn());
-    delay(101);
+    delay(11);
     // blink 2
     light.update();
     assertTrue(isOn());
-    delay(101);
+    delay(11);
     light.update();
     assertFalse(isOn());
-    delay(101);
+    delay(11);
     // blink 3
     light.update();
     assertTrue(isOn());
-    delay(101);
+    delay(11);
     light.update();
     assertFalse(isOn());
     // cleanup
@@ -361,7 +459,6 @@ bool isOff() {
     // calibrate pulse time
     light.setBrightnessPercent(50);
     pulse1 = getPulseTime();
-
     // fade the light
     light.fade(100,100,100,100,1);
     light.update();
