@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.4 - Unit test coverage.
+// Arduino RBD Light Library v2.1.5 - Unit test coverage.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2016 Alex Taujenis
 // MIT License
@@ -599,19 +599,22 @@ bool digitalIsOff() { return !digitalIsOn(); }
     light.update();
     delay(50);
     light.update();
-    assertWithinTolerance(getPulseTime(),pulse1,15);
+    assertWithinTolerance(getPulseTime(),pulse1,10);
     delay(65);
     light.update();
     assertTrue(isOn());
     delay(135);
     light.update();
-    assertWithinTolerance(getPulseTime(),pulse1,15);
+    assertWithinTolerance(getPulseTime(),pulse1,10);
     delay(51);
     light.update();
     assertTrue(isOff());
     delay(149);
     light.update();
-    assertWithinTolerance(getPulseTime(),pulse1,15);
+    assertWithinTolerance(getPulseTime(),pulse1,10);
+    delay(200);
+    light.update();
+    assertWithinTolerance(getPulseTime(),pulse1,10);
     testCleanup();
   }
 

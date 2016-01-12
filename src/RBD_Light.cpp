@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.4 - Control many lights.
+// Arduino RBD Light Library v2.1.5 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2016 Alex Taujenis
 // MIT License
@@ -72,8 +72,8 @@ namespace RBD {
 
   // unlimited times
   void Light::blink(unsigned long on_time, unsigned long off_time) {
-    _forever = true;
     blink(on_time, off_time, 0);
+    _forever = true;
   }
 
   void Light::fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time, int times) {
@@ -89,8 +89,8 @@ namespace RBD {
 
   // unlimited times
   void Light::fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time) {
-    _forever = true;
     fade(up_time, on_time, down_time, off_time, 0);
+    _forever = true;
   }
 
 
@@ -109,7 +109,7 @@ namespace RBD {
     off(false); // don't stop everything
     _off_timer.restart();
     if(!_forever) {
-      _times--;
+      if(_times > 0) {_times--;}
       if(_times == 0) {_stopBlinking();}
     }
   }
@@ -203,9 +203,8 @@ namespace RBD {
       }
     }
     else {
-      if(!_forever) {_times--;}
-
-      if(_times == 0 && !_forever) {
+      if(!_forever && _times > 0) {_times--;}
+      if(!_forever && _times == 0) {
         _stopFading();
       }
       else {
