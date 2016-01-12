@@ -3,9 +3,10 @@
 // Copyright 2016 Alex Taujenis
 // MIT License
 
-// Test Setup: Connect Arduino pin 3 directly to pin 5 with a small jumper wire.
+// Test Setup: Connect Arduino pin 3 directly to pin 2 with a small jumper wire.
 // The light library is outputting PWM signals on pin 3, while the test picks up
-// signal changes on pin 5. Keep the jumper wire short to ensure test accuracy.
+// signal changes on pin 2. Keep the jumper wire short to ensure test accuracy.
+// Also connect Arduino digital pin 23 directly to digital pin 22 if using a Mega 2560.
 
 #include <ArduinoUnit.h> // https://github.com/mmurdoch/arduinounit
 #include <RBD_Timer.h>   // https://github.com/alextaujenis/RBD_Timer
