@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.3 - Unit test coverage.
+// Arduino RBD Light Library v2.1.4 - Unit test coverage.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2016 Alex Taujenis
 // MIT License
@@ -11,21 +11,22 @@
 #include <RBD_Timer.h>   // https://github.com/alextaujenis/RBD_Timer
 #include <RBD_Light.h>   // https://github.com/alextaujenis/RBD_Light
 
-RBD::Light light(3);       // pin 3 (test send pin)
-const int receive_pin = 5; // pin 5 (test receive pin)
+// pwm test light
+RBD::Light light(3);       // pwm test send pin
+const int receive_pin = 2; // test receive pin
 
-// test helpers
-unsigned long getPulseTime() {
-  return pulseIn(receive_pin, HIGH);
-}
+// digital test light
+RBD::Light digital_light(23);       // digital test send pin
+const int digital_receive_pin = 22; // test receive pin
 
-bool isOn() {
-  return digitalRead(receive_pin);
-}
+// pwm test helpers
+unsigned long getPulseTime() { return pulseIn(receive_pin, HIGH); }
+bool isOn()  { return digitalRead(receive_pin); }
+bool isOff() { return !isOn(); }
 
-bool isOff() {
-  return !isOn();
-}
+// digital test helpers
+bool digitalIsOn()  { return digitalRead(digital_receive_pin); }
+bool digitalIsOff() { return !digitalIsOn(); }
 
 // on
   test(on_should_turn_on_the_light) {
@@ -54,6 +55,13 @@ bool isOff() {
     testCleanup();
   }
 
+// digital on
+  test(on_should_turn_on_the_digital_light) {
+    digital_light.on();
+    assertTrue(digitalIsOn());
+    testCleanup();
+  }
+
 // off
   test(off_should_turn_off_the_light) {
     light.on();
@@ -79,6 +87,14 @@ bool isOff() {
     delay(15);
     light.update();
     assertTrue(isOff());
+    testCleanup();
+  }
+
+// digital off
+  test(off_should_turn_off_the_digital_light) {
+    digital_light.on();
+    digital_light.off();
+    assertTrue(digitalIsOff());
     testCleanup();
   }
 
@@ -131,6 +147,13 @@ bool isOff() {
     testCleanup();
   }
 
+// digital isOn
+  test(isOn_should_return_true_when_digital_light_is_on) {
+    digital_light.on();
+    assertTrue(digital_light.isOn());
+    testCleanup();
+  }
+
 // isOff
   test(isOff_should_return_true_when_off) {
     light.off();
@@ -180,6 +203,14 @@ bool isOff() {
     testCleanup();
   }
 
+// digital isOff
+  test(isOff_should_return_true_when_digital_light_is_off) {
+    digital_light.on();
+    digital_light.off();
+    assertTrue(light.isOff());
+    testCleanup();
+  }
+
 // update: covered in blink and fade tests
 
 // setBrightness
@@ -223,6 +254,22 @@ bool isOff() {
     light.on();
     light.setBrightness(0);
     assertTrue(isOff());
+    testCleanup();
+  }
+
+  test(setBrightness_should_constrain_to_zero) {
+    light.on();
+    light.setBrightness(-1);
+    assertEqual(light.getBrightness(), 0)
+    assertTrue(isOff());
+    testCleanup();
+  }
+
+  test(setBrightness_should_constrain_to_255) {
+    light.off();
+    light.setBrightness(256);
+    assertEqual(light.getBrightness(), 255)
+    assertTrue(isOn());
     testCleanup();
   }
 
@@ -272,6 +319,46 @@ bool isOff() {
     delay(35);
     light.update();
     assertWithinTolerance(getPulseTime(), pulse1, 15);
+    testCleanup();
+  }
+
+// digital setBrightness
+// Apparently: analogWrite(digital_pin, 127) is the same as digitalWrite(digital_pin, LOW)
+// and analogWrite(digital_pin, 128) is the same as digitalWrite(digital_pin, HIGH)
+// as documented through tests run on an Arduino Mega 2560, and verified in wiring_analog.c
+  test(setBrightness_should_turn_on_the_digital_light_at_255) {
+    digital_light.setBrightness(255);
+    assertTrue(digitalIsOn());
+    testCleanup();
+  }
+
+  test(setBrightness_should_turn_on_the_digital_light_at_228) {
+    digital_light.setBrightness(228);
+    assertTrue(digitalIsOn());
+    testCleanup();
+  }
+
+  test(setBrightness_should_turn_on_the_digital_light_at_128) {
+    digital_light.setBrightness(128);
+    assertTrue(digitalIsOn());
+    testCleanup();
+  }
+
+  test(setBrightness_should_turn_off_the_digital_light_at_127) {
+    digital_light.setBrightness(127);
+    assertTrue(digitalIsOff());
+    testCleanup();
+  }
+
+  test(setBrightness_should_turn_off_the_digital_light_at_27) {
+    digital_light.setBrightness(27);
+    assertTrue(digitalIsOff());
+    testCleanup();
+  }
+
+  test(setBrightness_should_turn_off_the_digital_light_at_0) {
+    digital_light.setBrightness(0);
+    assertTrue(digitalIsOff());
     testCleanup();
   }
 
@@ -454,6 +541,30 @@ bool isOff() {
     testCleanup();
   }
 
+// digital blink
+  test(blink_should_turn_the_digital_light_on_and_off_multiple_times) {
+    digital_light.blink(10,10,2);
+    // blink 1
+    digital_light.update();
+    assertTrue(digitalIsOn());
+    delay(11);
+    digital_light.update();
+    assertFalse(digitalIsOn());
+    delay(11);
+    // blink 2
+    digital_light.update();
+    assertTrue(digitalIsOn());
+    delay(11);
+    digital_light.update();
+    assertFalse(digitalIsOn());
+    // validate finished
+    delay(11);
+    digital_light.update();
+    assertFalse(digitalIsOn());
+    // cleanup
+    testCleanup();
+  }
+
 // fade
   test(fade_should_ramp_the_light_up_and_down) {
     // calibrate pulse time
@@ -515,10 +626,11 @@ void loop() {
 }
 
 void testSetup() {
-  pinMode(receive_pin, INPUT); // receive signals on pin 5
+  pinMode(receive_pin, INPUT);
+  pinMode(digital_receive_pin, INPUT);
 }
 
 void testCleanup() {
   light.off();
-  light.update();
+  digital_light.off();
 }

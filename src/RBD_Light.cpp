@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.3 - Control many lights.
+// Arduino RBD Light Library v2.1.4 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2016 Alex Taujenis
 // MIT License
@@ -40,12 +40,12 @@ namespace RBD {
   }
 
   void Light::setBrightness(int value, bool _stop_everything) {
-    if(value > -1 && value < 256){
-      if(_stop_everything) {
-        _stopEverything();
-      }
-      analogWrite(_pin, value);
-      _pwm_value = value;
+    if(_stop_everything) {
+      _stopEverything();
+    }
+    if(_pwm_value != value) {
+      _pwm_value = constrain(value, 0, 255);
+      analogWrite(_pin, _pwm_value);
     }
   }
 
