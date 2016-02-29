@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.5 - Unit test coverage.
+// Arduino RBD Light Library v2.1.6 - Unit test coverage.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2016 Alex Taujenis
 // MIT License
@@ -563,6 +563,16 @@ bool digitalIsOff() { return !digitalIsOn(); }
     digital_light.update();
     assertFalse(digitalIsOn());
     // cleanup
+    testCleanup();
+  }
+
+// GitHub issue #4 bug fix
+// https://github.com/alextaujenis/RBD_Light/issues/4
+  test(blink_should_turn_on_the_light_after_calling_setBrightness) {
+    light.setBrightness(128);
+    light.blink(100,100);
+    light.update();
+    assertTrue(isOn());
     testCleanup();
   }
 
