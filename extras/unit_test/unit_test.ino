@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.6 - Unit test coverage.
+// Arduino RBD Light Library v2.1.7 - Unit test coverage.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2016 Alex Taujenis
 // MIT License
@@ -515,6 +515,14 @@ bool digitalIsOff() { return !digitalIsOn(); }
     testCleanup();
   }
 
+  test(blink_zero_times_should_not_turn_the_light_on) {
+    light.blink(10,10,0);
+    light.update();
+    assertTrue(isOff());
+    // cleanup
+    testCleanup();
+  }
+
 // blink: overloaded constructor
   test(overloaded_blink_should_turn_the_light_on_and_off_forever) {
     light.blink(10,10);
@@ -599,6 +607,23 @@ bool digitalIsOff() { return !digitalIsOn(); }
     testCleanup();
   }
 
+  test(fade_zero_times_should_not_ramp_the_light) {
+    // fade the light
+    light.fade(100,100,100,100,0);
+    light.update();
+    delay(50);
+    light.update();
+    delay(65);
+    light.update();
+    assertTrue(isOff());
+    delay(135);
+    light.update();
+    delay(51);
+    light.update();
+    assertTrue(isOff());
+    testCleanup();
+  }
+
 // fade: overloaded constructor
   test(overloaded_fade_should_ramp_the_light_up_and_down_forever) {
     // calibrate pulse time
@@ -609,22 +634,22 @@ bool digitalIsOff() { return !digitalIsOn(); }
     light.update();
     delay(50);
     light.update();
-    assertWithinTolerance(getPulseTime(),pulse1,10);
+    assertWithinTolerance(getPulseTime(),pulse1,15);
     delay(65);
     light.update();
     assertTrue(isOn());
     delay(135);
     light.update();
-    assertWithinTolerance(getPulseTime(),pulse1,10);
+    assertWithinTolerance(getPulseTime(),pulse1,15);
     delay(51);
     light.update();
     assertTrue(isOff());
     delay(149);
     light.update();
-    assertWithinTolerance(getPulseTime(),pulse1,10);
+    assertWithinTolerance(getPulseTime(),pulse1,15);
     delay(200);
     light.update();
-    assertWithinTolerance(getPulseTime(),pulse1,10);
+    assertWithinTolerance(getPulseTime(),pulse1,15);
     testCleanup();
   }
 

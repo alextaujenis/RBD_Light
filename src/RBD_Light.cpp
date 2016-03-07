@@ -1,4 +1,4 @@
-// Arduino RBD Light Library v2.1.6 - Control many lights.
+// Arduino RBD Light Library v2.1.7 - Control many lights.
 // https://github.com/alextaujenis/RBD_Light
 // Copyright 2016 Alex Taujenis
 // MIT License
@@ -63,34 +63,48 @@ namespace RBD {
 
   void Light::blink(unsigned long on_time, unsigned long off_time, int times) {
     _forever = false;
+    _times   = times;
+
     _on_timer.setTimeout(on_time);
     _off_timer.setTimeout(off_time);
-    _times = times;
     _stopEverything();
     _startBlinking();
   }
 
   // unlimited times
   void Light::blink(unsigned long on_time, unsigned long off_time) {
-    blink(on_time, off_time, 0);
     _forever = true;
+    _times   = 0;
+
+    _on_timer.setTimeout(on_time);
+    _off_timer.setTimeout(off_time);
+    _stopEverything();
+    _startBlinking();
   }
 
   void Light::fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time, int times) {
     _forever = false;
+    _times   = times;
+
     _up_timer.setTimeout(up_time);
     _on_timer.setTimeout(on_time);
     _down_timer.setTimeout(down_time);
     _off_timer.setTimeout(off_time);
-    _times = times;
     _stopEverything();
     _startFading();
   }
 
   // unlimited times
   void Light::fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time) {
-    fade(up_time, on_time, down_time, off_time, 0);
     _forever = true;
+    _times   = 0;
+
+    _up_timer.setTimeout(up_time);
+    _on_timer.setTimeout(on_time);
+    _down_timer.setTimeout(down_time);
+    _off_timer.setTimeout(off_time);
+    _stopEverything();
+    _startFading();
   }
 
 
@@ -222,9 +236,11 @@ namespace RBD {
   }
 
   void Light::_startFading() {
-    _up_timer.restart();
-    _state  = _RISING;
-    _fading = true;
+    if(_times > 0 || _forever) {
+      _up_timer.restart();
+      _state  = _RISING;
+      _fading = true;
+    }
   }
 
   void Light::_stopFading() {
@@ -232,7 +248,9 @@ namespace RBD {
   }
 
   void Light::_startBlinking() {
-    _blinking = true;
+    if(_times > 0 || _forever) {
+      _blinking = true;
+    }
   }
 
   void Light::_stopBlinking() {
