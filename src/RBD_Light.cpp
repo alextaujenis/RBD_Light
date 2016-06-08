@@ -16,10 +16,14 @@ namespace RBD {
   }
 
   void Light::on(bool _stop_everything) { // default: true
+	_minPmw = 0;
+    _maxPmw = 255;
     setBrightness(255, _stop_everything);
   }
 
   void Light::off(bool _stop_everything) { // default: true
+	_minPmw = 0;
+    _maxPmw = 255;
     setBrightness(0, _stop_everything);
   }
 
@@ -44,13 +48,13 @@ namespace RBD {
     if(_stop_everything) {
       _stopEverything();
     }
-    setBrightnessInner(value);
+	setBrightnessInner(value);
   }
 
-  inline void Light::setBrightnessInner(const uint8_t value) {
-    if(_pwm_value == value) return;
-    _pwm_value = constrain(value, _minPmw, _maxPmw);
-    analogWrite(_pin, _cie?CIELPWM(_pwm_value):_pwm_value);
+  inline void Light::setBrightnessInner(uint8_t value) {
+    if(_pwm_value == value) return;	
+	_pwm_value = constrain(value, _minPmw, _maxPmw);
+	analogWrite(_pin, _cie?CIELPWM(_pwm_value):_pwm_value);
   }
 
   void Light::setBrightnessPercent(int value, bool _stop_everything) {
