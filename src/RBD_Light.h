@@ -12,7 +12,7 @@
 namespace RBD {
   class Light {
     public:
-      Light(int pin);
+      Light(int pin, bool isSink = false);
       void on(bool _stop_everything = true);  // turn on the light, stop everything is for internal use only
       void off(bool _stop_everything = true); // turn off the light, stop everything is for internal use only
       bool isOn();                            // returns true when the light is at 100% brightness
@@ -29,6 +29,7 @@ namespace RBD {
       void fade(unsigned long up_time, unsigned long on_time, unsigned long down_time, unsigned long off_time);
     private:
       // global
+	  bool _isSink;
       int _pin;
       int _times;
       int _pwm_value = 0;

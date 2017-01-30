@@ -8,9 +8,14 @@
 #include <RBD_Light.h> // https://github.com/alextaujenis/RBD_Light
 
 namespace RBD {
-  Light::Light(int pin)
+  Light::Light(int pin, bool isSink)
   : _up_timer(), _on_timer(), _down_timer(), _off_timer() {
     _pin = pin;
+	_isSink = isSink;
+	
+	if (isSink) {
+      analogWrite(_pin, 255);
+	}
     pinMode(_pin, OUTPUT);
   }
 
@@ -45,7 +50,11 @@ namespace RBD {
     }
     if(_pwm_value != value) {
       _pwm_value = constrain(value, 0, 255);
-      analogWrite(_pin, _pwm_value);
+	  if (_isSink) {
+		analogWrite(_pin, 255 - _pwm_value);
+	  } else {
+		analogWrite(_pin, _pwm_value);  
+	  }
     }
   }
 
