@@ -15,6 +15,7 @@ namespace RBD {
       SimpleLight(int pin, bool isSink = false);
       void on(bool _stop_everything = true);  // turn on the light, stop everything is for internal use only
       void off(bool _stop_everything = true); // turn off the light, stop everything is for internal use only
+	  void toggle();
       bool isOn();                            // returns true when the light is at 100% brightness
       bool isOff();                           // returns true when the ligh is at 0% brightness
       void setBrightness(int value, bool _stop_everything = true);        // 0 - 255

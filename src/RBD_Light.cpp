@@ -21,6 +21,10 @@ namespace RBD {
   void SimpleLight::on(bool _stop_everything) { // default: true
     setBrightness(255, _stop_everything);
   }
+  
+  void SimpleLight::toggle() {
+    setBrightness(255 - getBrightness());
+  }
 
   void SimpleLight::off(bool _stop_everything) { // default: true
     setBrightness(0, _stop_everything);
