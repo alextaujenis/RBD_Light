@@ -10,16 +10,24 @@
 namespace RBD {
   SimpleLight::SimpleLight(int pin, bool isSink) {
     _pin = pin;
-	_isSink = isSink;
-	
-	if (isSink) {
+    _isSink = isSink;
+
+    if (isSink) {
       analogWrite(_pin, 255);
-	}
+    }
     pinMode(_pin, OUTPUT);
   }
 
   void SimpleLight::on(bool _stop_everything) { // default: true
     setBrightness(255, _stop_everything);
+  }
+  
+  void SimpleLight::setState(bool state, bool _stop_everything) { // default: true
+    if (state) {
+      on(_stop_everything);
+    } else {
+      off(_stop_everything);
+    }
   }
   
   void SimpleLight::toggle() {
@@ -44,11 +52,11 @@ namespace RBD {
     }
     if(_pwm_value != value) {
       _pwm_value = constrain(value, 0, 255);
-	  if (_isSink) {
-		analogWrite(_pin, 255 - _pwm_value);
-	  } else {
-		analogWrite(_pin, _pwm_value);  
-	  }
+      if (_isSink) {
+        analogWrite(_pin, 255 - _pwm_value);
+      } else {
+        analogWrite(_pin, _pwm_value);  
+      }
     }
   }
 
