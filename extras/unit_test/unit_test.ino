@@ -1,7 +1,6 @@
-// Arduino RBD Light Library v2.1.7 - Unit test coverage.
+// Arduino RBD Light Library v2.1.8 - Unit test coverage.
 // https://github.com/alextaujenis/RBD_Light
-// Copyright 2016 Alex Taujenis
-// MIT License
+// Copyright (c) 2015 Alex Taujenis - MIT License
 
 // Test Setup: Connect Arduino pin 3 directly to pin 2 with a small jumper wire.
 // The light library is outputting PWM signals on pin 3, while the test picks up
