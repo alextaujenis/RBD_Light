@@ -7,26 +7,81 @@
 #include <RBD_Light.h> // https://github.com/alextaujenis/RBD_Light
 
 namespace RBD {
-  Light::Light(int pin)
-  : _up_timer(), _on_timer(), _down_timer(), _off_timer() {
+  SimpleLight::SimpleLight(int pin, bool isSink) {
     _pin = pin;
+    _isSink = isSink;
+
+    if (isSink) {
+      analogWrite(_pin, 255);
+    }
     pinMode(_pin, OUTPUT);
   }
 
-  void Light::on(bool _stop_everything) { // default: true
+  void SimpleLight::on(bool _stop_everything) { // default: true
     setBrightness(255, _stop_everything);
   }
+  
+  void SimpleLight::setState(bool state, bool _stop_everything) { // default: true
+    if (state) {
+      on(_stop_everything);
+    } else {
+      off(_stop_everything);
+    }
+  }
+  
+  void SimpleLight::toggle() {
+    setBrightness(255 - getBrightness());
+  }
 
-  void Light::off(bool _stop_everything) { // default: true
+  void SimpleLight::off(bool _stop_everything) { // default: true
     setBrightness(0, _stop_everything);
   }
 
-  bool Light::isOn() {
+  bool SimpleLight::isOn() {
     return getBrightness() == 255;
   }
 
-  bool Light::isOff() {
+  bool SimpleLight::isOff() {
     return getBrightness() == 0;
+  }
+
+  void SimpleLight::setBrightness(int value, bool _stop_everything) {
+    if(_stop_everything) {
+      _stopEverything();
+    }
+    if(_pwm_value != value) {
+      _pwm_value = constrain(value, 0, 255);
+      if (_isSink) {
+        analogWrite(_pin, 255 - _pwm_value);
+      } else {
+        analogWrite(_pin, _pwm_value);  
+      }
+    }
+  }
+
+  void SimpleLight::setBrightnessPercent(int value, bool _stop_everything) {
+    setBrightness(int(value / 100.0 * 255), _stop_everything);
+  }
+
+  int SimpleLight::getBrightness() {
+    return _pwm_value;
+  }
+
+  int SimpleLight::getBrightnessPercent() {
+    return int(getBrightness() / 255.0 * 100);
+  }
+  
+  void SimpleLight::_stopEverything() {
+    // do nothing
+  }
+
+
+
+
+
+  Light::Light(int pin, bool isSink)
+  : SimpleLight(pin, isSink), _up_timer(), _on_timer(), _down_timer(), _off_timer() {
+
   }
 
   void Light::update() {
@@ -36,28 +91,6 @@ namespace RBD {
     if(_fading) {
       _fade();
     }
-  }
-
-  void Light::setBrightness(int value, bool _stop_everything) {
-    if(_stop_everything) {
-      _stopEverything();
-    }
-    if(_pwm_value != value) {
-      _pwm_value = constrain(value, 0, 255);
-      analogWrite(_pin, _pwm_value);
-    }
-  }
-
-  void Light::setBrightnessPercent(int value, bool _stop_everything) {
-    setBrightness(int(value / 100.0 * 255), _stop_everything);
-  }
-
-  int Light::getBrightness() {
-    return _pwm_value;
-  }
-
-  int Light::getBrightnessPercent() {
-    return int(getBrightness() / 255.0 * 100);
   }
 
   void Light::blink(unsigned long on_time, unsigned long off_time, int times) {
